@@ -3,22 +3,58 @@
 ## Python
 
 Ниже даны 3 варианта заданий. Решить нужно какое-то одно.
-Если успеваете в срок решить несколько — пожалуйста, такое будет плюсом :)
+Если успеваете в срок решить несколько — пожалуйста, такое будет плюсом 😀 
 
-### 1 (парсинг, агрегация данных)
+### 1 (качество кода, SOLID, принцип единой ответственности, Dependency Injection)
 
-Необходимо:
-1. Получить данные по комментариям и постам с ресурса http://jsonplaceholder.typicode.com/
-    * http://jsonplaceholder.typicode.com/posts
-    * http://jsonplaceholder.typicode.com/comments
+Выполните рефакторинг кода ниже.<br>
+*Подсказка: руководствуйтесь принципом единой ответственности. Также можно применить Dependency Injection.*
 
-2. Посчитать среднее количество комментариев к посту каждого
-   пользователя, результатом должен быть словарь формата:
-    * user_id
-    * average_comments_per_post
-   
-3. Результат вывести в stdout (например `print`).
+```python
+class Order:
 
+   def __init__(self):
+      self.items = []
+      self.quantities = []
+      self.prices = []
+      self.status = 'open'
+
+   def add_item(self, name, quantity, price):
+      self.items.append(name)
+      self.quantities.append(quantity)
+      self.prices.append(price)
+
+   def total_price(self):
+      total = 0
+      for i in range(len(self.prices)):
+         total += self.quantities[i] * self.prices[i]
+      return total
+
+   def pay(self, payment_type, security_code):
+      if payment_type == 'debit':
+         print('Какая-то логика реализации debit...')
+         print(f'Верифицируем код: {security_code}')
+         self.status = 'paid'
+      elif payment_type == 'credit':
+         print('Какая-то логика реализации credit...')
+         print(f'Верифицируем код: {security_code}')
+         self.status = 'paid'
+      else:
+         raise Exception(f'Неизвестный тип платежа: {payment_type}')
+
+
+def main() -> None:
+   order = Order()
+   order.add_item('Keyboard', 1, 50)
+   order.add_item('SSD', 1, 150)
+   order.add_item('USB cable', 2, 5)
+   print(order.total_price())
+   order.pay('debit', '0372846')
+
+
+if __name__ == "__main__":
+   main()
+```
 
 ### 2 (качество кода, Dependency Injection, Dependency Inversion)
 
@@ -113,53 +149,16 @@ if __name__ == '__main__':
 
 ```
 
-### 3 (качество кода, SOLID, принцип единой ответственности, Dependency Injection)
+### 3 (парсинг, агрегация данных)
 
-Выполните рефакторинг кода ниже.<br>
-*Подсказка: руководствуйтесь принципом единой ответственности. Также можно применить Dependency Injection.*
+Необходимо:
+1. Получить данные по комментариям и постам с ресурса http://jsonplaceholder.typicode.com/
+    * http://jsonplaceholder.typicode.com/posts
+    * http://jsonplaceholder.typicode.com/comments
 
-```python
-class Order:
-
-   def __init__(self):
-      self.items = []
-      self.quantities = []
-      self.prices = []
-      self.status = 'open'
-
-   def add_item(self, name, quantity, price):
-      self.items.append(name)
-      self.quantities.append(quantity)
-      self.prices.append(price)
-
-   def total_price(self):
-      total = 0
-      for i in range(len(self.prices)):
-         total += self.quantities[i] * self.prices[i]
-      return total
-
-   def pay(self, payment_type, security_code):
-      if payment_type == 'debit':
-         print('Какая-то логика реализации debit...')
-         print(f'Верифицируем код: {security_code}')
-         self.status = 'paid'
-      elif payment_type == 'credit':
-         print('Какая-то логика реализации credit...')
-         print(f'Верифицируем код: {security_code}')
-         self.status = 'paid'
-      else:
-         raise Exception(f'Неизвестный тип платежа: {payment_type}')
-
-
-def main() -> None:
-   order = Order()
-   order.add_item('Keyboard', 1, 50)
-   order.add_item('SSD', 1, 150)
-   order.add_item('USB cable', 2, 5)
-   print(order.total_price())
-   order.pay('debit', '0372846')
-
-
-if __name__ == "__main__":
-   main()
-```
+2. Посчитать среднее количество комментариев к посту каждого
+   пользователя, результатом должен быть словарь формата:
+    * user_id
+    * average_comments_per_post
+   
+3. Результат вывести в stdout (например `print`).

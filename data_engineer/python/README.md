@@ -7,7 +7,7 @@
 
 ### 1 (качество кода, SOLID, принцип единой ответственности, Dependency Injection)
 
-Выполните рефакторинг кода ниже.<br>
+Выполните рефакторинг кода ниже. Реализуйте новый *payment_type* (скажем, *bank*). Убедитесь, что добавление новых *payment_type* осуществляется легко.<br>
 *Подсказка: руководствуйтесь принципом единой ответственности. Также можно применить Dependency Injection.*
 
 ```python
@@ -72,10 +72,12 @@ class GlowLampSwitcher:
 
     def on(self) -> None:
         print('Лампа накаливания включена...')
+        print('Логика реализации включения лампы накаливания...')
         self.on_state = True
 
     def turn_off(self) -> None:
         print('Лампа накаливания выключена...')
+        print('Логика реализации выключения лампы накаливания...')
         self.on_state = False
 
 
@@ -86,10 +88,12 @@ class HalogenLampSwitcher:
 
     def turn_on(self) -> None:
         print('Галогенная лампа включена...')
+        print('Логика реализации включения галогена...')
         self.on_state = True
 
     def off(self) -> None:
         print('Галогенная лампа выключена...')
+        print('Логика реализации выключения галогена...')
         self.on_state = False
 
 
@@ -100,10 +104,12 @@ class AnotherLampSwitcher:
 
     def lamp_on(self) -> None:
         print('Ещё лампа включена...')
+        print('Специфическая логика реализации включения лампы...')
         self.on_state = True
 
     def lamp_off(self) -> None:
         print('Ещё лампа выключена...')
+        print('Специфическая логика реализации выключения лампы...')
         self.on_state = False
 
 

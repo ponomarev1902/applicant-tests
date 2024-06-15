@@ -80,7 +80,7 @@ GROUP BY
 
 ```sql
 SELECT
-  cu.customer_name, sum(it.item_id) Revenue
+  cu.customer_name, sum(it.item_price) Revenue
 FROM
   orders or
   LEFT JOIN customer cu
@@ -89,6 +89,9 @@ FROM
   on or.item_id = it.item_id
 GROUP BY
   cu.customer_name
+ORDER BY
+  revenue desc
+LIMIT 10
   
 ```
 
@@ -103,7 +106,19 @@ GROUP BY
 | Tanzania                  | #                     |
 
 ```sql
--- result here
+SELECT
+  co.country_name, sum(item_price) RevenuePerCountry
+FROM
+  orders or
+  LEFT JOIN customer cu
+  on or.customer_id = cu.customer_id
+  LEFT JOIN Items it
+  on or.item_id = it.item_id
+  FULL OUTER JOIN countries co
+  on cu.country_code = co.country_code
+  
+GROUP BY
+  cu.customer_name
 ```
 
 ### 4) Самый дорогой товар, купленный одним покупателем

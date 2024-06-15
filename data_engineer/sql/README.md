@@ -55,7 +55,15 @@ select count (*) from items
 | Italy                     | #                             |
 
 ```sql
--- result here
+SELECT co.country_name, count(distinct *) CustomerCountDistinct
+FROM
+  Customer cu
+  JOIN Countries co
+  on cu.country_code = co.country_code
+WHERE
+  co.name in ('France', 'Italy')
+GROUP BY
+  co.country_name
 ```
 
 ### 2) ТОП 10 покупателей по расходам
@@ -71,7 +79,17 @@ select count (*) from items
 | #                      | #           |
 
 ```sql
--- result here
+SELECT
+  cu.customer_name, sum(it.item_id) Revenue
+FROM
+  orders or
+  LEFT JOIN customer cu
+  on or.customer_id = cu.customer_id
+  LEFT JOIN Items it
+  on or.item_id = it.item_id
+GROUP BY
+  cu.customer_name
+  
 ```
 
 ### 3) Общая выручка USD по странам, если нет дохода, вернуть NULL

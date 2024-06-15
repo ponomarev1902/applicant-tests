@@ -82,11 +82,11 @@ GROUP BY
 SELECT
   cu.customer_name, sum(it.item_price) Revenue
 FROM
-  orders or
+  orders o
   LEFT JOIN customer cu
-  on or.customer_id = cu.customer_id
+  on o.customer_id = cu.customer_id
   LEFT JOIN Items it
-  on or.item_id = it.item_id
+  on o.item_id = it.item_id
 GROUP BY
   cu.customer_name
 ORDER BY
@@ -109,16 +109,15 @@ LIMIT 10
 SELECT
   co.country_name, sum(item_price) RevenuePerCountry
 FROM
-  orders or
+  orders o
   LEFT JOIN customer cu
   on or.customer_id = cu.customer_id
   LEFT JOIN Items it
   on or.item_id = it.item_id
   FULL OUTER JOIN countries co
   on cu.country_code = co.country_code
-  
 GROUP BY
-  cu.customer_name
+  c.country_name
 ```
 
 ### 4) Самый дорогой товар, купленный одним покупателем
@@ -134,7 +133,20 @@ GROUP BY
 | #                | #                  | #                         |
 
 ```sql
--- result here
+SELECT DISTINCT ON(customer_id) customer_id, customer_name, item_name MostExpensiveItemName
+FROM (
+  SELECT
+    cu.customer_id, cu.customer_name, it.item_name, it.item_price,
+    max(it.item_price) OVER(PARTITION BY cu.customer_id) max_price
+  FROM
+    orders o
+    LEFT JOIN customer cu
+    on o.customer_id = cu.customer_id
+    LEFT JOIN Items it
+    on o.item_id = it.item_id
+)
+WHERE
+  item_price = max_price
 ```
 
 ### 5) Ежемесячный доход

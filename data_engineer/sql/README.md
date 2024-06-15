@@ -111,9 +111,9 @@ SELECT
 FROM
   orders o
   LEFT JOIN customer cu
-  on or.customer_id = cu.customer_id
+  on o.customer_id = cu.customer_id
   LEFT JOIN Items it
-  on or.item_id = it.item_id
+  on o.item_id = it.item_id
   FULL OUTER JOIN countries co
   on cu.country_code = co.country_code
 GROUP BY
@@ -211,5 +211,46 @@ WHERE
 | #                     | #                 |
 
 ```sql
--- result here
+WITH SELECT as other_monthes (
+SELECT
+  *
+  , mean(it.item_price) mean_revenue
+FROM
+  orders o
+  LEFT JOIN customer cu
+  on o.customer_id = cu.customer_id
+  LEFT JOIN Items it
+  on o.item_id = it.item_id
+  FULL OUTER JOIN countries co
+  on cu.country_code = co.country_code
+WHERE
+  date_trunc('month', o.date_time) < date_trunc('month', current_date - interval '1 month') -- Покупки за последний месяц
+GROUP BY
+  cu.customer_id
+),
+last_month as (
+SELECT
+  *
+  , sum(it.item_price) total_revenue
+FROM
+  orders o
+  LEFT JOIN customer cu
+  on o.customer_id = cu.customer_id
+  LEFT JOIN Items it
+  on o.item_id = it.item_id
+  FULL OUTER JOIN countries co
+  on cu.country_code = co.country_code
+WHERE
+  date_trunc('month', o.date_time) = date_trunc('month', current_date - interval '1 month') -- Покупки за последний месяц
+GROUP BY
+  cu.customer_id
+) SELECT
+    Customer_id, total_revenue
+  FROM
+    last_month lm
+    JOIN other_montes om
+    on lm.customer_id = om.customer_id
+WHERE
+  lm.total_revenue > om.mean_revenue
+  
 ```

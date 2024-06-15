@@ -80,7 +80,7 @@ GROUP BY
 
 ```sql
 SELECT
-  cu.customer_name, sum(it.item_price) Revenue
+  cu.customer_name, sum(it.item_price * o.quantity) Revenue
 FROM
   orders o
   LEFT JOIN customer cu
@@ -107,7 +107,7 @@ LIMIT 10
 
 ```sql
 SELECT
-  co.country_name, sum(item_price) RevenuePerCountry
+  co.country_name, sum(it.item_price * o.quantity) RevenuePerCountry
 FROM
   orders o
   LEFT JOIN customer cu
@@ -133,7 +133,7 @@ GROUP BY
 | #                | #                  | #                         |
 
 ```sql
-SELECT DISTINCT ON(customer_id) customer_id, customer_name, item_name MostExpensiveItemName
+SELECT customer_id, customer_name, item_name MostExpensiveItemName
 FROM (
   SELECT
     cu.customer_id, cu.customer_name, it.item_name, it.item_price,
@@ -162,7 +162,15 @@ WHERE
 | #                     | #                 |
 
 ```sql
--- result here
+SELECT
+    to_char(date_trunc('month', o.date_time), 'MM') "Month (MM format)"
+    , sum(it.item_price * o.quantity) "Total Revenue"
+FROM
+   orders o
+   LEFT JOIN Items it
+   on o.item_id = it.item_id
+GROUP BY
+  to_char(date_trunc('month', o.date_time), 'MM')
 ```
 
 ### 6) Найти дубликаты
@@ -180,7 +188,7 @@ FROM
     , count(*) OVER(PARTITION BY date_time, customer_id, item_id) dublicates_count
   FROM
     orders
-)
+ )
 WHERE
   dublicates_count > 1;
 ```

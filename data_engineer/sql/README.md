@@ -172,7 +172,17 @@ WHERE
 Вы должны их найти и вернуть количество дубликатов.
 
 ```sql
--- result here
+SELECT DISTINCT ON(date_time, customer_id, item_id)
+FROM
+ (
+  SELECT
+    *
+    , count(*) OVER(PARTITION BY date_time, customer_id, item_id) dublicates_count
+  FROM
+    orders
+)
+WHERE
+  dublicates_count > 1;
 ```
 
 ### 7) Найти "важных" покупателей
@@ -224,7 +234,7 @@ FROM
   FULL OUTER JOIN countries co
   on cu.country_code = co.country_code
 WHERE
-  date_trunc('month', o.date_time) < date_trunc('month', current_date - interval '1 month') -- Покупки за последний месяц
+  date_trunc('month', o.date_time) < date_trunc('month', current_date - interval '1 month') -- Покупки за предыдущие месяца
 GROUP BY
   cu.customer_id
 ),
